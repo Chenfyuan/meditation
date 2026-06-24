@@ -63,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Container(
-        height: 150,
+        height: 180,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
           gradient: const LinearGradient(
@@ -238,7 +238,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             SizedBox(
-              height: 96,
+              height: 110,
               child: WeeklyChart(data: stats.weeklyMinutes),
             ),
           ],
