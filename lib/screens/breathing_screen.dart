@@ -21,20 +21,19 @@ class BreathingScreen extends StatelessWidget {
           stops: [0.0, 1.0],
         ),
       ),
-      child: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Top section
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 60),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30),
                           child: Column(
@@ -142,7 +141,6 @@ class BreathingScreen extends StatelessWidget {
             );
           },
         ),
-      ),
     );
   }
 }
