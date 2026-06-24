@@ -6,11 +6,7 @@ class WeeklyChart extends StatelessWidget {
   final List<int> data;
   final int highlightIndex;
 
-  const WeeklyChart({
-    super.key,
-    required this.data,
-    this.highlightIndex = 5,
-  });
+  const WeeklyChart({super.key, required this.data, this.highlightIndex = 5});
 
   static const _labels = ['一', '二', '三', '四', '五', '六', '日'];
 
@@ -42,7 +38,9 @@ class WeeklyChart extends StatelessWidget {
                 _labels[i],
                 style: AppFonts.sans(
                   fontSize: 12,
-                  color: isHighlight ? AppColors.primary : AppColors.textTertiary,
+                  color: isHighlight
+                      ? AppColors.primary
+                      : AppColors.textTertiary,
                 ),
               ),
             ],

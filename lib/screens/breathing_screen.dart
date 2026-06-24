@@ -97,8 +97,7 @@ class BreathingScreen extends StatelessWidget {
           GestureDetector(
             onTap: breathing.toggleRunning,
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 34, vertical: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 15),
               decoration: BoxDecoration(
                 color: AppColors.dark,
                 borderRadius: BorderRadius.circular(30),
@@ -114,10 +113,7 @@ class BreathingScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     breathing.isRunning ? '暂停' : '开始',
-                    style: AppFonts.sans(
-                      fontSize: 15,
-                      color: AppColors.white,
-                    ),
+                    style: AppFonts.sans(fontSize: 15, color: AppColors.white),
                   ),
                 ],
               ),

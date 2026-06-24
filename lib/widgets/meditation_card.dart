@@ -6,11 +6,7 @@ class MeditationCard extends StatelessWidget {
   final Meditation meditation;
   final VoidCallback? onTap;
 
-  const MeditationCard({
-    super.key,
-    required this.meditation,
-    this.onTap,
-  });
+  const MeditationCard({super.key, required this.meditation, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +18,7 @@ class MeditationCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: const BoxDecoration(
             border: Border(
-              bottom: BorderSide(
-                color: Color(0x12383127),
-                width: 1,
-              ),
+              bottom: BorderSide(color: Color(0x12383127), width: 1),
             ),
           ),
           child: Row(
@@ -42,7 +35,11 @@ class MeditationCard extends StatelessWidget {
                   ),
                 ),
                 child: const Center(
-                  child: Icon(Icons.play_arrow, color: Colors.white70, size: 22),
+                  child: Icon(
+                    Icons.play_arrow,
+                    color: Colors.white70,
+                    size: 22,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -70,10 +67,7 @@ class MeditationCard extends StatelessWidget {
               ),
               Text(
                 '${meditation.durationMinutes} 分钟',
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: AppColors.primary,
-                ),
+                style: const TextStyle(fontSize: 13, color: AppColors.primary),
               ),
             ],
           ),

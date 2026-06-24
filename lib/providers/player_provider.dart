@@ -7,7 +7,7 @@ class PlayerProvider extends ChangeNotifier {
   Duration _duration = const Duration(minutes: 15);
   String _currentTitle = '深度放松';
   String _currentInstructor = 'Liam';
-  String _ambientSound = '海浪轻拍';
+  final String _ambientSound = '海浪轻拍';
   Timer? _timer;
 
   bool get isPlaying => _isPlaying;

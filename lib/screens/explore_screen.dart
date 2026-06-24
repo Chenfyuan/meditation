@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
-import '../theme/app_fonts.dart';
 import 'package:provider/provider.dart';
-import '../models/meditation.dart';
+
+import '../providers/explore_provider.dart';
 import '../providers/player_provider.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_fonts.dart';
 import '../widgets/meditation_card.dart';
+import '../widgets/page_status_view.dart';
 
-class ExploreScreen extends StatefulWidget {
+class ExploreScreen extends StatelessWidget {
   const ExploreScreen({super.key});
 
   @override
-  State<ExploreScreen> createState() => _ExploreScreenState();
-}
-
-class _ExploreScreenState extends State<ExploreScreen> {
-  String _selectedFilter = '全部';
-  static const _filters = ['全部', '放松', '专注', '睡眠', '呼吸'];
-
-  @override
   Widget build(BuildContext context) {
-    final filtered = _selectedFilter == '全部'
-        ? sampleMeditations
-        : sampleMeditations
-            .where((m) => m.category == _selectedFilter)
-            .toList();
+    final exploreProvider = context.watch<ExploreProvider>();
+    final meditations = exploreProvider.meditations;
+
+    if (exploreProvider.isLoading && meditations.isEmpty) {
+      return const PageStatusView.loading(message: '正在探索静心内容…');
+    }
+
+    if (exploreProvider.errorMessage != null && meditations.isEmpty) {
+      return PageStatusView.error(
+        message: exploreProvider.errorMessage!,
+        onRetry: () {
+          exploreProvider.retry();
+        },
+      );
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 20),
@@ -61,7 +65,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: AppColors.backgroundLight,
                 borderRadius: BorderRadius.circular(16),
@@ -69,14 +73,29 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.search, color: AppColors.textTertiary, size: 18),
+                  const Icon(
+                    Icons.search,
+                    color: AppColors.textTertiary,
+                    size: 18,
+                  ),
                   const SizedBox(width: 10),
-                  Text(
-                    '搜索冥想、声音…',
-                    style: AppFonts.sans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      color: AppColors.textTertiary,
+                  Expanded(
+                    child: TextField(
+                      onChanged: exploreProvider.setSearchQuery,
+                      cursorColor: AppColors.primary,
+                      style: AppFonts.sans(
+                        fontSize: 14,
+                        color: AppColors.textPrimary,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: '搜索冥想、声音…',
+                        hintStyle: AppFonts.sans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w300,
+                          color: AppColors.textTertiary,
+                        ),
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ],
@@ -84,21 +103,23 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ),
           ),
           const SizedBox(height: 18),
-          // Filter chips
           SizedBox(
             height: 38,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              itemCount: _filters.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 9),
+              itemCount: exploreProvider.filters.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 9),
               itemBuilder: (context, i) {
-                final isActive = _filters[i] == _selectedFilter;
+                final filter = exploreProvider.filters[i];
+                final isActive = filter == exploreProvider.selectedFilter;
                 return GestureDetector(
-                  onTap: () => setState(() => _selectedFilter = _filters[i]),
+                  onTap: () => exploreProvider.setFilter(filter),
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: isActive
                           ? AppColors.primary
@@ -106,11 +127,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: Text(
-                      _filters[i],
+                      filter,
                       style: AppFonts.sans(
                         fontSize: 13,
-                        color:
-                            isActive ? Colors.white : AppColors.textSecondary,
+                        color: isActive
+                            ? Colors.white
+                            : AppColors.textSecondary,
                       ),
                     ),
                   ),
@@ -119,20 +141,34 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          // Meditation list
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
-              children: filtered.map((m) {
-                return MeditationCard(
-                  meditation: m,
-                  onTap: () {
-                    context
-                        .read<PlayerProvider>()
-                        .play(m.title, m.instructor, m.durationMinutes);
-                  },
-                );
-              }).toList(),
+              children: [
+                if (meditations.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 56),
+                    child: Text(
+                      '暂时没有匹配的内容，试试别的关键词。',
+                      style: AppFonts.sans(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ...meditations.map((meditation) {
+                  return MeditationCard(
+                    meditation: meditation,
+                    onTap: () {
+                      context.read<PlayerProvider>().play(
+                        meditation.title,
+                        meditation.instructor,
+                        meditation.durationMinutes,
+                      );
+                    },
+                  );
+                }),
+              ],
             ),
           ),
         ],

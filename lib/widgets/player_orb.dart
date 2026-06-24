@@ -49,10 +49,7 @@ class _PlayerOrbState extends State<PlayerOrb>
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
-        return Transform.scale(
-          scale: _scaleAnimation.value,
-          child: child,
-        );
+        return Transform.scale(scale: _scaleAnimation.value, child: child);
       },
       child: Container(
         width: 236,
@@ -84,10 +81,7 @@ class _PlayerOrbState extends State<PlayerOrb>
             height: 150,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white.withAlpha(102),
-                width: 1,
-              ),
+              border: Border.all(color: Colors.white.withAlpha(102), width: 1),
             ),
           ),
         ),

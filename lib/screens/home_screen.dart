@@ -1,15 +1,44 @@
 import 'package:flutter/material.dart';
-import '../theme/app_fonts.dart';
 import 'package:provider/provider.dart';
+
+import '../models/home_data.dart';
+import '../providers/home_provider.dart';
 import '../providers/navigation_provider.dart';
 import '../providers/player_provider.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_fonts.dart';
+import '../widgets/page_status_view.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = context.watch<HomeProvider>();
+
+    if (homeProvider.isLoading && homeProvider.homeData == null) {
+      return const PageStatusView.loading(message: '正在准备今日内容…');
+    }
+
+    if (homeProvider.errorMessage != null && homeProvider.homeData == null) {
+      return PageStatusView.error(
+        message: homeProvider.errorMessage!,
+        onRetry: () {
+          homeProvider.retry();
+        },
+      );
+    }
+
+    final homeData = homeProvider.homeData;
+    if (homeData == null) {
+      return PageStatusView.error(
+        message: '首页内容暂时不可用',
+        onRetry: () {
+          homeProvider.retry();
+        },
+      );
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(
@@ -22,7 +51,7 @@ class HomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '6 月 24 日 · 星期二',
+                  homeData.dateText,
                   style: AppFonts.sans(
                     fontSize: 13,
                     letterSpacing: 2,
@@ -37,18 +66,18 @@ class HomeScreen extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       color: AppColors.textPrimary,
                     ),
-                    children: const [
-                      TextSpan(text: '晚上好，'),
+                    children: [
+                      const TextSpan(text: '晚上好，'),
                       TextSpan(
-                        text: '林溪',
-                        style: TextStyle(color: AppColors.primary),
+                        text: homeData.greetingName,
+                        style: const TextStyle(color: AppColors.primary),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '愿你今晚拥有平静的睡前时光',
+                  homeData.greetingLine,
                   style: AppFonts.sans(
                     fontSize: 15,
                     fontWeight: FontWeight.w300,
@@ -59,22 +88,27 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 22),
-          _buildRecommendationCard(context),
+          _buildRecommendationCard(context, homeData.featuredSession),
           const SizedBox(height: 18),
-          _buildContinueListening(context),
+          if (homeData.continueSession != null)
+            _buildContinueListening(context, homeData.continueSession!),
           const SizedBox(height: 26),
-          _buildTopics(context),
+          _buildTopics(context, homeData.topicSummaries),
         ],
       ),
     );
   }
 
-  Widget _buildRecommendationCard(BuildContext context) {
+  Widget _buildRecommendationCard(BuildContext context, HomeSession session) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: GestureDetector(
         onTap: () {
-          context.read<PlayerProvider>().play('海边的黄昏', 'Sarah', 10);
+          context.read<PlayerProvider>().play(
+            session.title,
+            session.instructor,
+            session.durationMinutes,
+          );
         },
         child: Container(
           width: double.infinity,
@@ -82,10 +116,10 @@ class HomeScreen extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFFE0BD97), Color(0xFFB8865F)],
+              colors: AppColors.meditationGradientFor(session.themeKey),
             ),
             boxShadow: const [
               BoxShadow(
@@ -128,7 +162,9 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 7),
+                        horizontal: 14,
+                        vertical: 7,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withAlpha(56),
                         borderRadius: BorderRadius.circular(20),
@@ -144,7 +180,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '海边的黄昏',
+                      session.title,
                       style: AppFonts.serif(
                         fontSize: 27,
                         fontWeight: FontWeight.w500,
@@ -153,7 +189,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      '10 分钟 · 舒缓放松',
+                      '${session.durationMinutes} 分钟 · ${session.subtitle}',
                       style: AppFonts.sans(
                         fontSize: 14,
                         color: Colors.white.withAlpha(217),
@@ -180,8 +216,11 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   child: const Center(
-                    child: Icon(Icons.play_arrow,
-                        color: AppColors.primary, size: 28),
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: AppColors.primary,
+                      size: 28,
+                    ),
                   ),
                 ),
               ),
@@ -192,87 +231,92 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContinueListening(BuildContext context) {
+  Widget _buildContinueListening(
+    BuildContext context,
+    ContinueSession session,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.backgroundLight,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0x0D383127)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFFC1C4A2), Color(0xFF94A07A)],
+      child: GestureDetector(
+        onTap: () {
+          context.read<PlayerProvider>().play(
+            session.title,
+            session.instructor,
+            session.durationMinutes,
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundLight,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: const Color(0x0D383127)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: AppColors.meditationGradientFor(session.themeKey),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '继续聆听',
-                    style: AppFonts.sans(
-                      fontSize: 12,
-                      letterSpacing: 1,
-                      color: AppColors.primary,
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '继续聆听',
+                      style: AppFonts.sans(
+                        fontSize: 12,
+                        letterSpacing: 1,
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    '雨林深处',
-                    style: AppFonts.serif(
-                      fontSize: 17,
-                      color: AppColors.textPrimary,
+                    const SizedBox(height: 3),
+                    Text(
+                      session.title,
+                      style: AppFonts.serif(
+                        fontSize: 17,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Text(
-              '剩 03:20',
-              style: AppFonts.sans(
-                fontSize: 13,
-                color: AppColors.textTertiary,
+              Text(
+                session.remainingLabel,
+                style: AppFonts.sans(
+                  fontSize: 13,
+                  color: AppColors.textTertiary,
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              width: 38,
-              height: 38,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.dark,
+              const SizedBox(width: 10),
+              Container(
+                width: 38,
+                height: 38,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.dark,
+                ),
+                child: const Center(
+                  child: Icon(Icons.play_arrow, color: Colors.white, size: 18),
+                ),
               ),
-              child: const Center(
-                child: Icon(Icons.play_arrow, color: Colors.white, size: 18),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildTopics(BuildContext context) {
-    final topics = [
-      ('放松', '12 个练习', AppColors.accentRose),
-      ('专注', '8 个练习', AppColors.primaryDark),
-      ('睡眠', '15 个练习', AppColors.accentGreen),
-      ('减压', '10 个练习', AppColors.primary),
-    ];
-
+  Widget _buildTopics(BuildContext context, List<TopicSummary> topics) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -292,10 +336,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => context.read<NavigationProvider>().setIndex(1),
                 child: Text(
                   '查看全部',
-                  style: AppFonts.sans(
-                    fontSize: 13,
-                    color: AppColors.primary,
-                  ),
+                  style: AppFonts.sans(fontSize: 13, color: AppColors.primary),
                 ),
               ),
             ],
@@ -310,7 +351,10 @@ class HomeScreen extends StatelessWidget {
             childAspectRatio: 2.2,
             children: topics.map((t) {
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.cardBackground,
                   borderRadius: BorderRadius.circular(20),
@@ -322,7 +366,7 @@ class HomeScreen extends StatelessWidget {
                       height: 14,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: t.$3,
+                        color: AppColors.accentForTheme(t.themeKey),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -331,7 +375,7 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          t.$1,
+                          t.name,
                           style: AppFonts.serif(
                             fontSize: 16,
                             color: AppColors.textPrimary,
@@ -339,7 +383,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          t.$2,
+                          '${t.sessionCount} 个练习',
                           style: AppFonts.sans(
                             fontSize: 12,
                             color: AppColors.textTertiary,

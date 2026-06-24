@@ -7,7 +7,7 @@ class BreathingProvider extends ChangeNotifier {
   BreathPhase _phase = BreathPhase.inhale;
   int _countdown = 4;
   int _currentRound = 3;
-  int _totalRounds = 8;
+  final int _totalRounds = 8;
   int _remainingSeconds = 150; // 2:30
   bool _isRunning = false;
   Timer? _timer;

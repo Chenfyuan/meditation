@@ -1,107 +1,134 @@
 import 'package:flutter/material.dart';
-import '../theme/app_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../models/sleep_content.dart';
+import '../providers/sleep_provider.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_fonts.dart';
+import '../widgets/page_status_view.dart';
 
 class SleepScreen extends StatelessWidget {
   const SleepScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF3A2F2A),
-            Color(0xFF251D19),
-            Color(0xFF1B1512),
-          ],
-          stops: [0.0, 0.6, 1.0],
+    final sleepProvider = context.watch<SleepProvider>();
+
+    if (sleepProvider.isLoading && sleepProvider.sleepContent == null) {
+      return _buildDarkState(
+        child: const PageStatusView.loading(message: '正在准备晚安内容…', isDark: true),
+      );
+    }
+
+    if (sleepProvider.errorMessage != null &&
+        sleepProvider.sleepContent == null) {
+      return _buildDarkState(
+        child: PageStatusView.error(
+          message: sleepProvider.errorMessage!,
+          onRetry: () {
+            sleepProvider.retry();
+          },
+          isDark: true,
         ),
-      ),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '晚安时光',
-                      style: AppFonts.sans(
-                        fontSize: 13,
-                        letterSpacing: 2,
-                        color: AppColors.white.withAlpha(140),
-                      ),
+      );
+    }
+
+    final sleepContent = sleepProvider.sleepContent;
+    if (sleepContent == null) {
+      return _buildDarkState(
+        child: PageStatusView.error(
+          message: '睡眠内容暂时不可用',
+          onRetry: () {
+            sleepProvider.retry();
+          },
+          isDark: true,
+        ),
+      );
+    }
+
+    return _buildDarkState(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '晚安时光',
+                    style: AppFonts.sans(
+                      fontSize: 13,
+                      letterSpacing: 2,
+                      color: AppColors.white.withAlpha(140),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '准备入睡了吗？',
-                      style: AppFonts.serif(
-                        fontSize: 29,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFFF7EFE5),
-                      ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '准备入睡了吗？',
+                    style: AppFonts.serif(
+                      fontSize: 29,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFFF7EFE5),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 22),
-              // Sleep story card
-              _buildSleepStoryCard(),
-              const SizedBox(height: 26),
-              // Ambient sounds
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '环境音景',
-                      style: AppFonts.sans(
-                        fontSize: 13,
-                        letterSpacing: 1,
-                        color: AppColors.white.withAlpha(140),
-                      ),
+            ),
+            const SizedBox(height: 22),
+            _buildSleepStoryCard(sleepContent.featuredStory),
+            const SizedBox(height: 26),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '环境音景',
+                    style: AppFonts.sans(
+                      fontSize: 13,
+                      letterSpacing: 1,
+                      color: AppColors.white.withAlpha(140),
                     ),
-                    const SizedBox(height: 16),
-                    _buildAmbientSoundsRow(),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildAmbientSoundsRow(sleepContent.ambientSounds),
+                ],
               ),
-              const SizedBox(height: 24),
-              // List items
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    _buildSleepListItem(
-                      '海浪轻语',
-                      '声景 · 30 分钟',
-                      const [Color(0xFF7A92A0), Color(0xFF4A5D68)],
-                    ),
-                    _buildSleepListItem(
-                      '星空之下',
-                      '睡前故事 · 18 分钟',
-                      const [Color(0xFF6A5E7A), Color(0xFF3E3550)],
-                    ),
-                  ],
-                ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                children: sleepContent.sleepItems.map((item) {
+                  return _buildSleepListItem(item);
+                }).toList(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildSleepStoryCard() {
+  Widget _buildDarkState({required Widget child}) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF3A2F2A), Color(0xFF251D19), Color(0xFF1B1512)],
+          stops: [0.0, 0.6, 1.0],
+        ),
+      ),
+      child: SafeArea(child: child),
+    );
+  }
+
+  Widget _buildSleepStoryCard(SleepStory story) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Container(
@@ -110,10 +137,10 @@ class SleepScreen extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFF6A5444), Color(0xFF3C2D24)],
+            colors: AppColors.sleepGradientFor(story.themeKey),
           ),
           boxShadow: const [
             BoxShadow(
@@ -143,8 +170,10 @@ class SleepScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 13, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 13,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withAlpha(41),
                       borderRadius: BorderRadius.circular(18),
@@ -160,7 +189,7 @@ class SleepScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    '雨夜森林',
+                    story.title,
                     style: AppFonts.serif(
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
@@ -169,7 +198,7 @@ class SleepScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '轻柔雨声 · 45 分钟',
+                    story.metadata,
                     style: AppFonts.sans(
                       fontSize: 13,
                       color: Colors.white.withAlpha(191),
@@ -189,8 +218,11 @@ class SleepScreen extends StatelessWidget {
                   color: Colors.white.withAlpha(235),
                 ),
                 child: const Center(
-                  child: Icon(Icons.play_arrow,
-                      color: Color(0xFF3C2D24), size: 24),
+                  child: Icon(
+                    Icons.play_arrow,
+                    color: Color(0xFF3C2D24),
+                    size: 24,
+                  ),
                 ),
               ),
             ),
@@ -200,14 +232,7 @@ class SleepScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAmbientSoundsRow() {
-    final sounds = [
-      ('雨声', const [Color(0xFF7A8A6A), Color(0xFF4D5A40)], true),
-      ('海浪', const [Color(0xFF7A92A0), Color(0xFF4A5D68)], false),
-      ('篝火', const [Color(0xFFC08D62), Color(0xFF8A5E3E)], false),
-      ('白噪', const [Color(0xFF8A8278), Color(0xFF56504A)], false),
-    ];
-
+  Widget _buildAmbientSoundsRow(List<AmbientSound> sounds) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: sounds.map((s) {
@@ -221,20 +246,22 @@ class SleepScreen extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: s.$2,
+                  colors: AppColors.sleepGradientFor(s.themeKey),
                 ),
-                border: s.$3
+                border: s.isFeatured
                     ? Border.all(
-                        color: AppColors.white.withAlpha(128), width: 1.5)
+                        color: AppColors.white.withAlpha(128),
+                        width: 1.5,
+                      )
                     : null,
               ),
             ),
             const SizedBox(height: 9),
             Text(
-              s.$1,
+              s.title,
               style: AppFonts.sans(
                 fontSize: 13,
-                color: s.$3
+                color: s.isFeatured
                     ? AppColors.white.withAlpha(204)
                     : AppColors.white.withAlpha(140),
               ),
@@ -245,8 +272,7 @@ class SleepScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSleepListItem(
-      String title, String subtitle, List<Color> colors) {
+  Widget _buildSleepListItem(SleepItem item) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
@@ -264,7 +290,7 @@ class SleepScreen extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: colors,
+                colors: AppColors.sleepGradientFor(item.themeKey),
               ),
             ),
           ),
@@ -274,15 +300,12 @@ class SleepScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
-                  style: AppFonts.serif(
-                    fontSize: 17,
-                    color: AppColors.white,
-                  ),
+                  item.title,
+                  style: AppFonts.serif(fontSize: 17, color: AppColors.white),
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  subtitle,
+                  item.metadata,
                   style: AppFonts.sans(
                     fontSize: 12,
                     color: AppColors.white.withAlpha(128),

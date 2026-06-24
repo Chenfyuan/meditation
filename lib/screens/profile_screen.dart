@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import '../theme/app_fonts.dart';
+import 'package:provider/provider.dart';
+
 import '../models/user_stats.dart';
+import '../providers/profile_provider.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_fonts.dart';
+import '../widgets/page_status_view.dart';
 import '../widgets/weekly_chart.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -9,7 +13,31 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const stats = UserStats();
+    final profileProvider = context.watch<ProfileProvider>();
+
+    if (profileProvider.isLoading && profileProvider.userStats == null) {
+      return const PageStatusView.loading(message: '正在整理你的旅程数据…');
+    }
+
+    if (profileProvider.errorMessage != null &&
+        profileProvider.userStats == null) {
+      return PageStatusView.error(
+        message: profileProvider.errorMessage!,
+        onRetry: () {
+          profileProvider.retry();
+        },
+      );
+    }
+
+    final stats = profileProvider.userStats;
+    if (stats == null) {
+      return PageStatusView.error(
+        message: '个人统计暂时不可用',
+        onRetry: () {
+          profileProvider.retry();
+        },
+      );
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 20),
@@ -172,10 +200,7 @@ class ProfileScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: AppFonts.sans(
-              fontSize: 13,
-              color: AppColors.textTertiary,
-            ),
+            style: AppFonts.sans(fontSize: 13, color: AppColors.textTertiary),
           ),
           const SizedBox(height: 8),
           Row(
@@ -297,7 +322,9 @@ class ProfileScreen extends StatelessWidget {
                 a.$2,
                 style: AppFonts.sans(
                   fontSize: 12,
-                  color: a.$4 ? AppColors.textSecondary : const Color(0xFFBDB09C),
+                  color: a.$4
+                      ? AppColors.textSecondary
+                      : const Color(0xFFBDB09C),
                 ),
               ),
             ],

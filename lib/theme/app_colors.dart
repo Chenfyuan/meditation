@@ -23,4 +23,53 @@ class AppColors {
   static const Color darkBgDeep = Color(0xFF241B15);
   static const Color darkBgSleep = Color(0xFF1B1512);
   static const Color sleepAccent = Color(0xFFDCAE9E);
+
+  static List<Color> meditationGradientFor(String themeKey) {
+    switch (themeKey) {
+      case 'rose':
+        return const [accentRose, accentRoseDark];
+      case 'sage':
+        return const [accentGreenLight, accentGreen];
+      case 'bronze':
+        return const [primaryLight, primary];
+      case 'twilight':
+        return const [Color(0xFFB89A8A), accentGreen];
+      case 'sand':
+      default:
+        return const [primaryLight, primaryDark];
+    }
+  }
+
+  static Color accentForTheme(String themeKey) {
+    switch (themeKey) {
+      case 'rose':
+        return accentRose;
+      case 'sage':
+        return accentGreen;
+      case 'bronze':
+        return primary;
+      case 'sand':
+        return primaryDark;
+      default:
+        return textMuted;
+    }
+  }
+
+  static List<Color> sleepGradientFor(String themeKey) {
+    switch (themeKey) {
+      case 'moss':
+        return const [Color(0xFF7A8A6A), Color(0xFF4D5A40)];
+      case 'ocean':
+        return const [Color(0xFF7A92A0), Color(0xFF4A5D68)];
+      case 'fire':
+        return const [Color(0xFFC08D62), Color(0xFF8A5E3E)];
+      case 'violet':
+        return const [Color(0xFF6A5E7A), Color(0xFF3E3550)];
+      case 'stone':
+        return const [Color(0xFF8A8278), Color(0xFF56504A)];
+      case 'cocoa':
+      default:
+        return const [Color(0xFF6A5444), Color(0xFF3C2D24)];
+    }
+  }
 }
