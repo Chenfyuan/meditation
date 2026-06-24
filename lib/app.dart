@@ -30,30 +30,36 @@ class AppShell extends StatelessWidget {
 
     // Player screen shown as overlay when playing
     if (player.isPlaying || player.position > Duration.zero) {
-      return const PlayerScreen();
+      return _wrapWithMaxWidth(const PlayerScreen(), AppColors.darkBgDeep);
     }
 
-    return Scaffold(
-      backgroundColor: _getBackground(currentIndex),
-      body: Stack(
-        children: [
-          IndexedStack(
-            index: currentIndex,
-            children: const [
-              HomeScreen(),
-              ExploreScreen(),
-              BreathingScreen(),
-              SleepScreen(),
-              ProfileScreen(),
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _buildBottomNav(currentIndex),
-          ),
-        ],
+    return _wrapWithMaxWidth(
+      Scaffold(
+        backgroundColor: _getBackground(currentIndex),
+        body: IndexedStack(
+          index: currentIndex,
+          children: const [
+            HomeScreen(),
+            ExploreScreen(),
+            BreathingScreen(),
+            SleepScreen(),
+            ProfileScreen(),
+          ],
+        ),
+        bottomNavigationBar: _buildBottomNav(currentIndex),
+      ),
+      _getBackground(currentIndex),
+    );
+  }
+
+  Widget _wrapWithMaxWidth(Widget child, Color bgColor) {
+    return Container(
+      color: bgColor,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 430),
+          child: child,
+        ),
       ),
     );
   }
@@ -81,18 +87,8 @@ class _DarkBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final nav = context.read<NavigationProvider>();
     return Container(
-      padding: const EdgeInsets.only(top: 16, bottom: 30, left: 22, right: 22),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColors.darkBgSleep.withAlpha(0),
-            AppColors.darkBgSleep,
-          ],
-          stops: const [0.0, 0.4],
-        ),
-      ),
+      color: AppColors.darkBgSleep,
+      padding: const EdgeInsets.only(top: 12, bottom: 24, left: 22, right: 22),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(_labels.length, (i) {
@@ -100,29 +96,33 @@ class _DarkBottomNav extends StatelessWidget {
           return GestureDetector(
             onTap: () => nav.setIndex(i),
             behavior: HitTestBehavior.opaque,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  _labels[i],
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isActive
-                        ? AppColors.sleepAccent
-                        : AppColors.white.withAlpha(115),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _labels[i],
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isActive
+                          ? AppColors.sleepAccent
+                          : AppColors.white.withAlpha(115),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 7),
-                Container(
-                  width: 5,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:
-                        isActive ? AppColors.sleepAccent : Colors.transparent,
+                  const SizedBox(height: 6),
+                  Container(
+                    width: 5,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isActive
+                          ? AppColors.sleepAccent
+                          : Colors.transparent,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         }),
