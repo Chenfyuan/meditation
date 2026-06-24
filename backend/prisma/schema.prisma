@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SleepItemType {
+  STORY
+  SOUNDSCAPE
+}
+
+model Meditation {
+  id             String   @id @default(cuid())
+  title          String
+  subtitle       String
+  instructor     String
+  durationMinutes Int     @map("duration_minutes")
+  category       String
+  themeKey       String   @map("theme_key")
+  isFeaturedHome Boolean  @default(false) @map("is_featured_home")
+  isActive       Boolean  @default(true) @map("is_active")
+  sortOrder      Int      @default(0) @map("sort_order")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive, sortOrder])
+  @@index([category])
+  @@map("meditations")
+}
+
+model SleepItem {
+  id              String        @id @default(cuid())
+  title           String
+  descriptor      String
+  type            SleepItemType
+  durationMinutes Int           @map("duration_minutes")
+  themeKey        String        @map("theme_key")
+  isFeatured      Boolean       @default(false) @map("is_featured")
+  sortOrder       Int           @default(0) @map("sort_order")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@index([isFeatured, sortOrder])
+  @@index([type, sortOrder])
+  @@map("sleep_items")
+}
+
+model AmbientSound {
+  id         String   @id @default(cuid())
+  title      String
+  themeKey   String   @map("theme_key")
+  isFeatured Boolean  @default(false) @map("is_featured")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([sortOrder])
+  @@map("ambient_sounds")
+}
+
+model TopicSummary {
+  id           String   @id @default(cuid())
+  name         String
+  sessionCount Int      @map("session_count")
+  themeKey     String   @map("theme_key")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([sortOrder])
+  @@map("topic_summaries")
+}
+
+model UserStats {
+  id              String   @id @default(cuid())
+  streakDays      Int      @map("streak_days")
+  totalMinutes    Int      @map("total_minutes")
+  totalSessions   Int      @map("total_sessions")
+  weeklyCompleted Int      @map("weekly_completed")
+  weeklyMinutes   Json     @map("weekly_minutes")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("user_stats")
+}

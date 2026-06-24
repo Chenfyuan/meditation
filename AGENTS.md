@@ -14,6 +14,18 @@ flutter build apk        # Android APK
 flutter build web        # Web 产物在 build/web/
 ```
 
+### 真实后端
+
+```bash
+cd backend
+cp .env.example .env     # Windows 可手动复制
+npm install
+npm run db:up
+npm run prisma:migrate -- --name init
+npm run prisma:seed
+npm run start:dev
+```
+
 ## 代码规范
 
 - 状态管理使用 Provider + ChangeNotifier
@@ -33,6 +45,9 @@ flutter build web        # Web 产物在 build/web/
 - 默认注入的是 `MockContentRepository`
 - 真实 REST 接口实现位于 `lib/repositories/remote_content_repository.dart`
 - 切换 mock / remote 的入口在 `lib/main.dart`
+- Flutter 通过 `--dart-define` 控制是否接真实后端：
+  - `USE_REMOTE_CONTENT=true`
+  - `CONTENT_API_BASE_URL=http://127.0.0.1:3000`
 - 页面 provider 统一负责 `loading / error / data / retry`
 - 当前新增的页面 provider：
   - `HomeProvider`
@@ -60,6 +75,10 @@ flutter build web        # Web 产物在 build/web/
   - `GET /meditations`
   - `GET /sleep`
   - `GET /user/stats`
+- 仓库现在包含真实后端：`backend/`
+  - 技术栈：`NestJS + PostgreSQL + Prisma`
+  - 当前版本定位：内容优先、只读 REST API
+  - 本地开发依赖 PostgreSQL seed 数据
 - 探索页支持的 query 参数约定：
   - `category`
   - `q`
@@ -82,12 +101,30 @@ flutter build web        # Web 产物在 build/web/
 - 新的只读页面数据优先走：
   - `Screen -> Provider -> Repository -> ApiClient`
 - 如果继续扩展内容模型，优先补 `fromJson`，不要把后端字段和 Flutter `Color` 直接耦合
+- 后端接口变更时，优先兼容现有 Flutter contract，不要随意改：
+  - `GET /home`
+  - `GET /meditations`
+  - `GET /sleep`
+  - `GET /user/stats`
+- `backend/prisma/seed.ts` 不是 demo 假接口，而是本地开发必需的真实初始化数据入口
 - 已确认的数据架构设计文档在：
   - `docs/superpowers/specs/2026-06-24-rest-data-architecture-design.md`
+  - `docs/superpowers/specs/2026-06-24-nestjs-backend-design.md`
 
 ## 关键架构决策
 
-- 播放器作为全局覆盖层显示（当 `PlayerProvider.isPlaying` 或 `position > 0` 时）
+- 播放器作为全局覆盖层显示，支持 `expanded` 全屏态和 `collapsed` 迷你条态
+- 点击完整播放器左上角下箭头时应收起到迷你播放器，并返回原页面且继续播放
+- `AppShell` 采用响应式壳层：
+  - 手机：保留底部导航和窄屏内容宽度
+  - 平板：放宽主内容宽度，仍使用底部导航
+  - 桌面：切换为左侧导航面板 + 右侧主内容区
+- 页面级响应式优先保持“手机结构不变，桌面再增强”：
+  - `Home`：宽屏两栏，主题区支持更多列
+  - `Explore`：宽屏改为内容卡片网格
+  - `Sleep`：宽屏改为故事/音景/列表分栏
+  - `Profile`：宽屏改为旅程卡与统计分栏
+  - `Player`：宽屏改为双栏播放器
 - 底部导航使用 `IndexedStack` 保持各页面状态
 - 呼吸动画使用 `AnimationController` + `TweenSequence`
 - 睡眠页和播放页使用深色主题，通过各自的 Container 背景渐变实现

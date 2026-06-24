@@ -39,69 +39,133 @@ class HomeScreen extends StatelessWidget {
       );
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 60),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  homeData.dateText,
-                  style: AppFonts.sans(
-                    fontSize: 13,
-                    letterSpacing: 2,
-                    color: AppColors.textTertiary,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                RichText(
-                  text: TextSpan(
-                    style: AppFonts.serif(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textPrimary,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth >= 900;
+        final horizontalPadding = constraints.maxWidth >= 1100 ? 42.0 : 30.0;
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: isWide ? 42 : 60),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      homeData.dateText,
+                      style: AppFonts.sans(
+                        fontSize: 13,
+                        letterSpacing: 2,
+                        color: AppColors.textTertiary,
+                      ),
                     ),
+                    const SizedBox(height: 8),
+                    RichText(
+                      text: TextSpan(
+                        style: AppFonts.serif(
+                          fontSize: isWide ? 34 : 30,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textPrimary,
+                        ),
+                        children: [
+                          const TextSpan(text: '晚上好，'),
+                          TextSpan(
+                            text: homeData.greetingName,
+                            style: const TextStyle(color: AppColors.primary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      homeData.greetingLine,
+                      style: AppFonts.sans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w300,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 22),
+              if (isWide)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const TextSpan(text: '晚上好，'),
-                      TextSpan(
-                        text: homeData.greetingName,
-                        style: const TextStyle(color: AppColors.primary),
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          children: [
+                            _buildRecommendationCard(
+                              context,
+                              homeData.featuredSession,
+                              horizontalPadding: 0,
+                            ),
+                            const SizedBox(height: 18),
+                            if (homeData.continueSession != null)
+                              _buildContinueListening(
+                                context,
+                                homeData.continueSession!,
+                                horizontalPadding: 0,
+                              ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        flex: 5,
+                        child: _buildTopicsSection(
+                          context,
+                          homeData.topicSummaries,
+                          isWide: true,
+                          horizontalPadding: 0,
+                        ),
                       ),
                     ],
                   ),
+                )
+              else ...[
+                _buildRecommendationCard(
+                  context,
+                  homeData.featuredSession,
+                  horizontalPadding: horizontalPadding,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  homeData.greetingLine,
-                  style: AppFonts.sans(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w300,
-                    color: AppColors.textSecondary,
+                const SizedBox(height: 18),
+                if (homeData.continueSession != null)
+                  _buildContinueListening(
+                    context,
+                    homeData.continueSession!,
+                    horizontalPadding: horizontalPadding,
                   ),
+                const SizedBox(height: 26),
+                _buildTopicsSection(
+                  context,
+                  homeData.topicSummaries,
+                  isWide: false,
+                  horizontalPadding: horizontalPadding,
                 ),
               ],
-            ),
+            ],
           ),
-          const SizedBox(height: 22),
-          _buildRecommendationCard(context, homeData.featuredSession),
-          const SizedBox(height: 18),
-          if (homeData.continueSession != null)
-            _buildContinueListening(context, homeData.continueSession!),
-          const SizedBox(height: 26),
-          _buildTopics(context, homeData.topicSummaries),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildRecommendationCard(BuildContext context, HomeSession session) {
+  Widget _buildRecommendationCard(
+    BuildContext context,
+    HomeSession session, {
+    double horizontalPadding = 30,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: GestureDetector(
         onTap: () {
           context.read<PlayerProvider>().play(
@@ -233,10 +297,11 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildContinueListening(
     BuildContext context,
-    ContinueSession session,
-  ) {
+    ContinueSession session, {
+    double horizontalPadding = 30,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: GestureDetector(
         onTap: () {
           context.read<PlayerProvider>().play(
@@ -316,10 +381,16 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTopics(BuildContext context, List<TopicSummary> topics) {
+  Widget _buildTopicsSection(
+    BuildContext context,
+    List<TopicSummary> topics, {
+    required bool isWide,
+    required double horizontalPadding,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -342,59 +413,66 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 2.2,
-            children: topics.map((t) {
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 14,
-                      height: 14,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.accentForTheme(t.themeKey),
-                      ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final crossAxisCount = constraints.maxWidth >= 760 ? 4 : 2;
+              final childAspectRatio = isWide ? 1.55 : 2.2;
+
+              return GridView.count(
+                crossAxisCount: crossAxisCount,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: childAspectRatio,
+                children: topics.map((t) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
                     ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
                       children: [
-                        Text(
-                          t.name,
-                          style: AppFonts.serif(
-                            fontSize: 16,
-                            color: AppColors.textPrimary,
+                        Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.accentForTheme(t.themeKey),
                           ),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '${t.sessionCount} 个练习',
-                          style: AppFonts.sans(
-                            fontSize: 12,
-                            color: AppColors.textTertiary,
-                          ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              t.name,
+                              style: AppFonts.serif(
+                                fontSize: 16,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${t.sessionCount} 个练习',
+                              style: AppFonts.sans(
+                                fontSize: 12,
+                                color: AppColors.textTertiary,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  );
+                }).toList(),
               );
-            }).toList(),
+            },
           ),
         ],
       ),

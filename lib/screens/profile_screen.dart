@@ -39,57 +39,86 @@ class ProfileScreen extends StatelessWidget {
       );
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 60),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '我的旅程',
-                  style: AppFonts.serif(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth >= 900;
+        final horizontalPadding = constraints.maxWidth >= 1100 ? 42.0 : 30.0;
+
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: isWide ? 34 : 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: isWide ? 42 : 60),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '我的旅程',
+                      style: AppFonts.serif(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      '每一次静心，都在累积',
+                      style: AppFonts.sans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w300,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  '每一次静心，都在累积',
-                  style: AppFonts.sans(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w300,
-                    color: AppColors.textSecondary,
+              ),
+              const SizedBox(height: 22),
+              if (isWide)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: _buildStreakCard(stats, horizontalPadding: 0),
+                      ),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          children: [
+                            _buildStatsRow(stats, horizontalPadding: 0),
+                            const SizedBox(height: 16),
+                            _buildWeeklySection(stats, horizontalPadding: 0),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                )
+              else ...[
+                _buildStreakCard(stats),
+                const SizedBox(height: 14),
+                _buildStatsRow(stats),
+                const SizedBox(height: 16),
+                _buildWeeklySection(stats),
               ],
-            ),
+              const SizedBox(height: 18),
+              _buildAchievements(horizontalPadding: horizontalPadding),
+            ],
           ),
-          const SizedBox(height: 22),
-          // Streak card
-          _buildStreakCard(stats),
-          const SizedBox(height: 14),
-          // Stats row
-          _buildStatsRow(stats),
-          const SizedBox(height: 16),
-          // Weekly chart
-          _buildWeeklySection(stats),
-          const SizedBox(height: 18),
-          // Achievements
-          _buildAchievements(),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildStreakCard(UserStats stats) {
+  Widget _buildStreakCard(UserStats stats, {double horizontalPadding = 30}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Container(
         height: 180,
         decoration: BoxDecoration(
@@ -174,9 +203,9 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsRow(UserStats stats) {
+  Widget _buildStatsRow(UserStats stats, {double horizontalPadding = 30}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Row(
         children: [
           Expanded(child: _buildStatBox('总时长', '${stats.totalMinutes}', '分钟')),
@@ -230,9 +259,9 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWeeklySection(UserStats stats) {
+  Widget _buildWeeklySection(UserStats stats, {double horizontalPadding = 30}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -272,7 +301,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAchievements() {
+  Widget _buildAchievements({double horizontalPadding = 30}) {
     final achievements = [
       ('七', '七日坚持', const [Color(0xFFE0BD97), Color(0xFFC49A72)], true),
       ('晨', '早起鸟', const [Color(0xFFC1C4A2), Color(0xFF94A07A)], true),
@@ -280,7 +309,7 @@ class ProfileScreen extends StatelessWidget {
     ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: achievements.map((a) {

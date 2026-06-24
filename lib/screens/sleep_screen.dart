@@ -47,69 +47,101 @@ class SleepScreen extends StatelessWidget {
     }
 
     return _buildDarkState(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '晚安时光',
-                    style: AppFonts.sans(
-                      fontSize: 13,
-                      letterSpacing: 2,
-                      color: AppColors.white.withAlpha(140),
-                    ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWide = constraints.maxWidth >= 900;
+          final horizontalPadding = constraints.maxWidth >= 1100 ? 42.0 : 30.0;
+
+          return SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: isWide ? 34 : 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: isWide ? 32 : 20),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '晚安时光',
+                        style: AppFonts.sans(
+                          fontSize: 13,
+                          letterSpacing: 2,
+                          color: AppColors.white.withAlpha(140),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '准备入睡了吗？',
+                        style: AppFonts.serif(
+                          fontSize: 29,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFFF7EFE5),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '准备入睡了吗？',
-                    style: AppFonts.serif(
-                      fontSize: 29,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFFF7EFE5),
+                ),
+                const SizedBox(height: 22),
+                if (isWide)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding,
                     ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: _buildSleepStoryCard(
+                            sleepContent.featuredStory,
+                            height: 280,
+                            horizontalPadding: 0,
+                          ),
+                        ),
+                        const SizedBox(width: 24),
+                        Expanded(
+                          flex: 5,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildAmbientSection(
+                                sleepContent.ambientSounds,
+                                horizontalPadding: 0,
+                                isWide: true,
+                              ),
+                              const SizedBox(height: 24),
+                              _buildSleepListSection(
+                                sleepContent.sleepItems,
+                                horizontalPadding: 0,
+                                isWide: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else ...[
+                  _buildSleepStoryCard(sleepContent.featuredStory),
+                  const SizedBox(height: 26),
+                  _buildAmbientSection(
+                    sleepContent.ambientSounds,
+                    horizontalPadding: horizontalPadding,
+                    isWide: false,
+                  ),
+                  const SizedBox(height: 24),
+                  _buildSleepListSection(
+                    sleepContent.sleepItems,
+                    horizontalPadding: horizontalPadding,
+                    isWide: false,
                   ),
                 ],
-              ),
+              ],
             ),
-            const SizedBox(height: 22),
-            _buildSleepStoryCard(sleepContent.featuredStory),
-            const SizedBox(height: 26),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '环境音景',
-                    style: AppFonts.sans(
-                      fontSize: 13,
-                      letterSpacing: 1,
-                      color: AppColors.white.withAlpha(140),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildAmbientSoundsRow(sleepContent.ambientSounds),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: sleepContent.sleepItems.map((item) {
-                  return _buildSleepListItem(item);
-                }).toList(),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -128,12 +160,16 @@ class SleepScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSleepStoryCard(SleepStory story) {
+  Widget _buildSleepStoryCard(
+    SleepStory story, {
+    double horizontalPadding = 30,
+    double height = 188,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Container(
         width: double.infinity,
-        height: 188,
+        height: height,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
@@ -232,43 +268,121 @@ class SleepScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAmbientSoundsRow(List<AmbientSound> sounds) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: sounds.map((s) {
-        return Column(
+  Widget _buildAmbientSection(
+    List<AmbientSound> sounds, {
+    required double horizontalPadding,
+    required bool isWide,
+  }) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Container(
+        padding: const EdgeInsets.all(22),
+        decoration: BoxDecoration(
+          color: Colors.white.withAlpha(10),
+          borderRadius: BorderRadius.circular(26),
+          border: Border.all(color: Colors.white.withAlpha(18)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: AppColors.sleepGradientFor(s.themeKey),
-                ),
-                border: s.isFeatured
-                    ? Border.all(
-                        color: AppColors.white.withAlpha(128),
-                        width: 1.5,
-                      )
-                    : null,
-              ),
-            ),
-            const SizedBox(height: 9),
             Text(
-              s.title,
+              '环境音景',
               style: AppFonts.sans(
                 fontSize: 13,
-                color: s.isFeatured
-                    ? AppColors.white.withAlpha(204)
-                    : AppColors.white.withAlpha(140),
+                letterSpacing: 1,
+                color: AppColors.white.withAlpha(140),
               ),
             ),
+            const SizedBox(height: 16),
+            if (isWide)
+              Wrap(
+                spacing: 12,
+                runSpacing: 14,
+                children: sounds.map((sound) {
+                  return SizedBox(
+                    width: 112,
+                    child: _buildAmbientSoundItem(sound),
+                  );
+                }).toList(),
+              )
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: sounds.map(_buildAmbientSoundItem).toList(),
+              ),
           ],
-        );
-      }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAmbientSoundItem(AmbientSound sound) {
+    return Column(
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: AppColors.sleepGradientFor(sound.themeKey),
+            ),
+            border: sound.isFeatured
+                ? Border.all(color: AppColors.white.withAlpha(128), width: 1.5)
+                : null,
+          ),
+        ),
+        const SizedBox(height: 9),
+        Text(
+          sound.title,
+          style: AppFonts.sans(
+            fontSize: 13,
+            color: sound.isFeatured
+                ? AppColors.white.withAlpha(204)
+                : AppColors.white.withAlpha(140),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSleepListSection(
+    List<SleepItem> items, {
+    required double horizontalPadding,
+    required bool isWide,
+  }) {
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (isWide)
+          Text(
+            '入睡列表',
+            style: AppFonts.sans(
+              fontSize: 13,
+              letterSpacing: 1,
+              color: AppColors.white.withAlpha(140),
+            ),
+          ),
+        if (isWide) const SizedBox(height: 12),
+        ...items.map(_buildSleepListItem),
+      ],
+    );
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: isWide
+          ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha(10),
+                borderRadius: BorderRadius.circular(26),
+                border: Border.all(color: Colors.white.withAlpha(18)),
+              ),
+              child: content,
+            )
+          : content,
     );
   }
 

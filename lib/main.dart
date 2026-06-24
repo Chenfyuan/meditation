@@ -10,10 +10,11 @@ import 'providers/profile_provider.dart';
 import 'providers/sleep_provider.dart';
 import 'repositories/content_repository.dart';
 import 'repositories/mock_content_repository.dart';
+import 'repositories/remote_content_repository.dart';
 import 'theme/app_theme.dart';
 
 void main() {
-  final contentRepository = MockContentRepository();
+  final contentRepository = _createContentRepository();
 
   runApp(
     MultiProvider(
@@ -51,4 +52,19 @@ void main() {
       ),
     ),
   );
+}
+
+ContentRepository _createContentRepository() {
+  const useRemoteContent = bool.fromEnvironment('USE_REMOTE_CONTENT');
+  const remoteBaseUrl = String.fromEnvironment('CONTENT_API_BASE_URL');
+
+  if (useRemoteContent) {
+    final normalizedBaseUrl = remoteBaseUrl.trim().isNotEmpty
+        ? remoteBaseUrl.trim()
+        : 'http://127.0.0.1:3000';
+
+    return RemoteContentRepository(baseUrl: normalizedBaseUrl);
+  }
+
+  return MockContentRepository();
 }
