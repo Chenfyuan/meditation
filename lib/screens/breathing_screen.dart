@@ -32,45 +32,32 @@ class BreathingScreen extends StatelessWidget {
                   children: [
                     // Top section
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 20),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 28, vertical: 14),
-                          child: Row(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(Icons.chevron_left,
-                                  color: AppColors.textPrimary, size: 24),
-                              Expanded(
-                                child: Center(
-                                  child: Text(
-                                    '呼吸练习',
-                                    style: AppFonts.sans(
-                                      fontSize: 13,
-                                      letterSpacing: 3,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
+                              Text(
+                                '呼吸练习',
+                                style: AppFonts.serif(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
-                              const SizedBox(width: 24),
+                              const SizedBox(height: 6),
+                              Text(
+                                '4 · 7 · 8 呼吸法 · 第 ${breathing.currentRound} / ${breathing.totalRounds} 轮',
+                                style: AppFonts.sans(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w300,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
                             ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          '4 · 7 · 8 呼吸法',
-                          style: AppFonts.serif(
-                            fontSize: 26,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '第 ${breathing.currentRound} / ${breathing.totalRounds} 轮',
-                          style: AppFonts.sans(
-                            fontSize: 14,
-                            color: AppColors.textTertiary,
                           ),
                         ),
                       ],
