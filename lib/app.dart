@@ -53,7 +53,6 @@ class AppShell extends StatelessWidget {
   }
 
   Color _getBackground(int index) {
-    if (index == 3) return const Color(0xFF3A2F2A);
     return AppColors.background;
   }
 
