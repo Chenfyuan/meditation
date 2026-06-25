@@ -172,6 +172,7 @@ class HomeScreen extends StatelessWidget {
             session.title,
             session.instructor,
             session.durationMinutes,
+            audioUrl: session.audioUrl,
           );
         },
         child: Container(
@@ -308,6 +309,7 @@ class HomeScreen extends StatelessWidget {
             session.title,
             session.instructor,
             session.durationMinutes,
+            audioUrl: session.audioUrl,
           );
         },
         child: Container(

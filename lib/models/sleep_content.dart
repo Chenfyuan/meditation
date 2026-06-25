@@ -32,6 +32,7 @@ class SleepStory {
   final String descriptor;
   final int durationMinutes;
   final String themeKey;
+  final String? audioUrl;
 
   const SleepStory({
     required this.id,
@@ -39,6 +40,7 @@ class SleepStory {
     required this.descriptor,
     required this.durationMinutes,
     required this.themeKey,
+    this.audioUrl,
   });
 
   String get metadata => '$descriptor · $durationMinutes 分钟';
@@ -50,6 +52,7 @@ class SleepStory {
       descriptor: json['descriptor'] as String? ?? '',
       durationMinutes: _readInt(json['durationMinutes']),
       themeKey: json['themeKey'] as String? ?? 'cocoa',
+      audioUrl: json['audioUrl'] as String?,
     );
   }
 }
@@ -59,12 +62,14 @@ class AmbientSound {
   final String title;
   final String themeKey;
   final bool isFeatured;
+  final String? audioUrl;
 
   const AmbientSound({
     required this.id,
     required this.title,
     required this.themeKey,
     this.isFeatured = false,
+    this.audioUrl,
   });
 
   factory AmbientSound.fromJson(Map<String, dynamic> json) {
@@ -73,6 +78,7 @@ class AmbientSound {
       title: json['title'] as String? ?? '',
       themeKey: json['themeKey'] as String? ?? 'stone',
       isFeatured: json['isFeatured'] as bool? ?? false,
+      audioUrl: json['audioUrl'] as String?,
     );
   }
 }
@@ -83,6 +89,7 @@ class SleepItem {
   final String type;
   final int durationMinutes;
   final String themeKey;
+  final String? audioUrl;
 
   const SleepItem({
     required this.id,
@@ -90,6 +97,7 @@ class SleepItem {
     required this.type,
     required this.durationMinutes,
     required this.themeKey,
+    this.audioUrl,
   });
 
   String get metadata => '$type · $durationMinutes 分钟';
@@ -101,6 +109,7 @@ class SleepItem {
       type: json['type'] as String? ?? '',
       durationMinutes: _readInt(json['durationMinutes']),
       themeKey: json['themeKey'] as String? ?? 'stone',
+      audioUrl: json['audioUrl'] as String?,
     );
   }
 }

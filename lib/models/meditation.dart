@@ -10,6 +10,7 @@ class Meditation {
   final int durationMinutes;
   final String category;
   final String themeKey;
+  final String? audioUrl;
 
   const Meditation({
     required this.id,
@@ -19,6 +20,7 @@ class Meditation {
     required this.durationMinutes,
     required this.category,
     this.themeKey = 'sand',
+    this.audioUrl,
   });
 
   List<Color> get gradientColors => AppColors.meditationGradientFor(themeKey);
@@ -32,6 +34,7 @@ class Meditation {
       durationMinutes: _readInt(json['durationMinutes']),
       category: json['category'] as String? ?? '',
       themeKey: json['themeKey'] as String? ?? 'sand',
+      audioUrl: json['audioUrl'] as String?,
     );
   }
 }

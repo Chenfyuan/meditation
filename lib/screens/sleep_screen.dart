@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/sleep_content.dart';
+import '../providers/player_provider.dart';
 import '../providers/sleep_provider.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_fonts.dart';
@@ -95,6 +96,7 @@ class SleepScreen extends StatelessWidget {
                         Expanded(
                           flex: 6,
                           child: _buildSleepStoryCard(
+                            context,
                             sleepContent.featuredStory,
                             height: 280,
                             horizontalPadding: 0,
@@ -124,7 +126,7 @@ class SleepScreen extends StatelessWidget {
                     ),
                   )
                 else ...[
-                  _buildSleepStoryCard(sleepContent.featuredStory),
+                  _buildSleepStoryCard(context, sleepContent.featuredStory),
                   const SizedBox(height: 26),
                   _buildAmbientSection(
                     sleepContent.ambientSounds,
@@ -161,13 +163,23 @@ class SleepScreen extends StatelessWidget {
   }
 
   Widget _buildSleepStoryCard(
+    BuildContext context,
     SleepStory story, {
     double horizontalPadding = 30,
     double height = 188,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: Container(
+      child: GestureDetector(
+        onTap: () {
+          context.read<PlayerProvider>().play(
+            story.title,
+            '',
+            story.durationMinutes,
+            audioUrl: story.audioUrl,
+          );
+        },
+        child: Container(
         width: double.infinity,
         height: height,
         clipBehavior: Clip.hardEdge,
@@ -264,6 +276,7 @@ class SleepScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

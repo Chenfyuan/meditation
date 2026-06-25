@@ -43,6 +43,7 @@ class HomeSession {
   final String instructor;
   final int durationMinutes;
   final String themeKey;
+  final String? audioUrl;
 
   const HomeSession({
     required this.id,
@@ -51,6 +52,7 @@ class HomeSession {
     required this.instructor,
     required this.durationMinutes,
     required this.themeKey,
+    this.audioUrl,
   });
 
   factory HomeSession.fromJson(Map<String, dynamic> json) {
@@ -61,6 +63,7 @@ class HomeSession {
       instructor: json['instructor'] as String? ?? '',
       durationMinutes: _readInt(json['durationMinutes']),
       themeKey: json['themeKey'] as String? ?? 'bronze',
+      audioUrl: json['audioUrl'] as String?,
     );
   }
 }
@@ -72,6 +75,7 @@ class ContinueSession {
   final int durationMinutes;
   final int remainingSeconds;
   final String themeKey;
+  final String? audioUrl;
 
   const ContinueSession({
     required this.id,
@@ -80,6 +84,7 @@ class ContinueSession {
     required this.durationMinutes,
     required this.remainingSeconds,
     required this.themeKey,
+    this.audioUrl,
   });
 
   String get remainingLabel {
@@ -96,6 +101,7 @@ class ContinueSession {
       durationMinutes: _readInt(json['durationMinutes']),
       remainingSeconds: _readInt(json['remainingSeconds']),
       themeKey: json['themeKey'] as String? ?? 'sage',
+      audioUrl: json['audioUrl'] as String?,
     );
   }
 }

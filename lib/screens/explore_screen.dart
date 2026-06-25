@@ -136,6 +136,7 @@ class ExploreScreen extends StatelessWidget {
                                 meditation.title,
                                 meditation.instructor,
                                 meditation.durationMinutes,
+                                audioUrl: meditation.audioUrl,
                               );
                             },
                           );
@@ -150,6 +151,7 @@ class ExploreScreen extends StatelessWidget {
                                 meditation.title,
                                 meditation.instructor,
                                 meditation.durationMinutes,
+                                audioUrl: meditation.audioUrl,
                               );
                             },
                           );
