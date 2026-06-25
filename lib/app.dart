@@ -173,63 +173,6 @@ class AppShell extends StatelessWidget {
   }
 
   Widget _buildBottomNav(int index) {
-    if (index == 3) {
-      return _DarkBottomNav(currentIndex: index);
-    }
     return const BottomNav();
-  }
-}
-
-class _DarkBottomNav extends StatelessWidget {
-  final int currentIndex;
-  const _DarkBottomNav({required this.currentIndex});
-
-  static const _labels = ['首页', '探索', '呼吸', '睡眠', '我的'];
-
-  @override
-  Widget build(BuildContext context) {
-    final nav = context.read<NavigationProvider>();
-    return Container(
-      color: AppColors.darkBgSleep,
-      padding: const EdgeInsets.only(top: 12, bottom: 24, left: 22, right: 22),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(_labels.length, (i) {
-          final isActive = currentIndex == i;
-          return GestureDetector(
-            onTap: () => nav.setIndex(i),
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _labels[i],
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isActive
-                          ? AppColors.sleepAccent
-                          : AppColors.white.withAlpha(115),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Container(
-                    width: 5,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isActive
-                          ? AppColors.sleepAccent
-                          : Colors.transparent,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }),
-      ),
-    );
   }
 }

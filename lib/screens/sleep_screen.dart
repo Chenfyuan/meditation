@@ -69,7 +69,7 @@ class SleepScreen extends StatelessWidget {
                         style: AppFonts.sans(
                           fontSize: 13,
                           letterSpacing: 2,
-                          color: AppColors.white.withAlpha(140),
+                          color: AppColors.textTertiary,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -78,7 +78,7 @@ class SleepScreen extends StatelessWidget {
                         style: AppFonts.serif(
                           fontSize: 29,
                           fontWeight: FontWeight.w500,
-                          color: const Color(0xFFF7EFE5),
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ],
@@ -149,17 +149,7 @@ class SleepScreen extends StatelessWidget {
   }
 
   Widget _buildDarkState({required Widget child}) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF3A2F2A), Color(0xFF251D19), Color(0xFF1B1512)],
-          stops: [0.0, 0.6, 1.0],
-        ),
-      ),
-      child: SafeArea(child: child),
-    );
+    return child;
   }
 
   Widget _buildSleepStoryCard(
@@ -291,9 +281,9 @@ class SleepScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
-          color: Colors.white.withAlpha(10),
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(26),
-          border: Border.all(color: Colors.white.withAlpha(18)),
+          border: Border.all(color: const Color(0x0D383127)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,7 +293,7 @@ class SleepScreen extends StatelessWidget {
               style: AppFonts.sans(
                 fontSize: 13,
                 letterSpacing: 1,
-                color: AppColors.white.withAlpha(140),
+                color: AppColors.textTertiary,
               ),
             ),
             const SizedBox(height: 16),
@@ -343,7 +333,7 @@ class SleepScreen extends StatelessWidget {
               colors: AppColors.sleepGradientFor(sound.themeKey),
             ),
             border: sound.isFeatured
-                ? Border.all(color: AppColors.white.withAlpha(128), width: 1.5)
+                ? Border.all(color: AppColors.primary, width: 1.5)
                 : null,
           ),
         ),
@@ -353,8 +343,8 @@ class SleepScreen extends StatelessWidget {
           style: AppFonts.sans(
             fontSize: 13,
             color: sound.isFeatured
-                ? AppColors.white.withAlpha(204)
-                : AppColors.white.withAlpha(140),
+                ? AppColors.textPrimary
+                : AppColors.textSecondary,
           ),
         ),
       ],
@@ -375,7 +365,7 @@ class SleepScreen extends StatelessWidget {
             style: AppFonts.sans(
               fontSize: 13,
               letterSpacing: 1,
-              color: AppColors.white.withAlpha(140),
+              color: AppColors.textTertiary,
             ),
           ),
         if (isWide) const SizedBox(height: 12),
@@ -389,9 +379,9 @@ class SleepScreen extends StatelessWidget {
           ? Container(
               padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.white.withAlpha(10),
+                color: AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(26),
-                border: Border.all(color: Colors.white.withAlpha(18)),
+                border: Border.all(color: const Color(0x0D383127)),
               ),
               child: content,
             )
@@ -404,7 +394,7 @@ class SleepScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.white.withAlpha(20), width: 1),
+          top: BorderSide(color: const Color(0x12383127), width: 1),
         ),
       ),
       child: Row(
@@ -428,14 +418,14 @@ class SleepScreen extends StatelessWidget {
               children: [
                 Text(
                   item.title,
-                  style: AppFonts.serif(fontSize: 17, color: AppColors.white),
+                  style: AppFonts.serif(fontSize: 17, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   item.metadata,
                   style: AppFonts.sans(
                     fontSize: 12,
-                    color: AppColors.white.withAlpha(128),
+                    color: AppColors.textTertiary,
                   ),
                 ),
               ],
@@ -445,7 +435,7 @@ class SleepScreen extends StatelessWidget {
             '播放',
             style: AppFonts.sans(
               fontSize: 12,
-              color: AppColors.sleepAccent.withAlpha(230),
+              color: AppColors.primary,
             ),
           ),
         ],
