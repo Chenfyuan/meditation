@@ -215,6 +215,10 @@ class PlayerScreen extends StatelessWidget {
   }
 
   Widget _buildMeta(PlayerProvider player, {required TextAlign textAlign}) {
+    final instructorLabel = player.currentInstructor.trim().isEmpty
+        ? '静 · 放松练习'
+        : '${player.currentInstructor} · 引导冥想';
+
     return Column(
       crossAxisAlignment: textAlign == TextAlign.left
           ? CrossAxisAlignment.start
@@ -231,7 +235,7 @@ class PlayerScreen extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          '${player.currentInstructor} · 引导冥想',
+          instructorLabel,
           textAlign: textAlign,
           style: AppFonts.sans(
             fontSize: 14,
@@ -295,14 +299,19 @@ class PlayerScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          Icons.skip_previous,
-          color: AppColors.white.withAlpha(217),
-          size: 32,
+        GestureDetector(
+          onTap: player.canControl
+              ? () => player.seekBy(const Duration(seconds: -10))
+              : null,
+          child: Icon(
+            Icons.replay_10,
+            color: AppColors.white.withAlpha(player.canControl ? 217 : 90),
+            size: 32,
+          ),
         ),
         const SizedBox(width: 34),
         GestureDetector(
-          onTap: player.togglePlay,
+          onTap: player.canControl ? () => player.togglePlay() : null,
           child: Container(
             width: 74,
             height: 74,
@@ -318,16 +327,34 @@ class PlayerScreen extends StatelessWidget {
               ],
             ),
             child: Center(
-              child: Icon(
-                player.isPlaying ? Icons.pause : Icons.play_arrow,
-                color: AppColors.darkBg,
-                size: 32,
-              ),
+              child: player.isLoading
+                  ? const SizedBox(
+                      width: 26,
+                      height: 26,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.6,
+                        color: AppColors.darkBg,
+                      ),
+                    )
+                  : Icon(
+                      player.isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: AppColors.darkBg,
+                      size: 32,
+                    ),
             ),
           ),
         ),
         const SizedBox(width: 34),
-        Icon(Icons.skip_next, color: AppColors.white.withAlpha(217), size: 32),
+        GestureDetector(
+          onTap: player.canControl
+              ? () => player.seekBy(const Duration(seconds: 10))
+              : null,
+          child: Icon(
+            Icons.forward_10,
+            color: AppColors.white.withAlpha(player.canControl ? 217 : 90),
+            size: 32,
+          ),
+        ),
       ],
     );
   }
@@ -352,7 +379,7 @@ class PlayerScreen extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Text(
-            '背景音景 · ${player.ambientSound}',
+            player.statusLabel,
             style: AppFonts.sans(
               fontSize: 13,
               color: AppColors.white.withAlpha(217),

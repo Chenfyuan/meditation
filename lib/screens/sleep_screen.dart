@@ -109,12 +109,14 @@ class SleepScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildAmbientSection(
+                                context,
                                 sleepContent.ambientSounds,
                                 horizontalPadding: 0,
                                 isWide: true,
                               ),
                               const SizedBox(height: 24),
                               _buildSleepListSection(
+                                context,
                                 sleepContent.sleepItems,
                                 horizontalPadding: 0,
                                 isWide: true,
@@ -129,12 +131,14 @@ class SleepScreen extends StatelessWidget {
                   _buildSleepStoryCard(context, sleepContent.featuredStory),
                   const SizedBox(height: 26),
                   _buildAmbientSection(
+                    context,
                     sleepContent.ambientSounds,
                     horizontalPadding: horizontalPadding,
                     isWide: false,
                   ),
                   const SizedBox(height: 24),
                   _buildSleepListSection(
+                    context,
                     sleepContent.sleepItems,
                     horizontalPadding: horizontalPadding,
                     isWide: false,
@@ -164,114 +168,115 @@ class SleepScreen extends StatelessWidget {
         onTap: () {
           context.read<PlayerProvider>().play(
             story.title,
-            '',
+            '睡眠故事',
             story.durationMinutes,
             audioUrl: story.audioUrl,
           );
         },
         child: Container(
-        width: double.infinity,
-        height: height,
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(28),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: AppColors.sleepGradientFor(story.themeKey),
-          ),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x99000000),
-              blurRadius: 36,
-              offset: Offset(0, 18),
+          width: double.infinity,
+          height: height,
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: AppColors.sleepGradientFor(story.themeKey),
             ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -50,
-              right: -30,
-              child: Container(
-                width: 160,
-                height: 160,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.accentRose.withAlpha(46),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x99000000),
+                blurRadius: 36,
+                offset: Offset(0, 18),
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: -50,
+                right: -30,
+                child: Container(
+                  width: 160,
+                  height: 160,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.accentRose.withAlpha(46),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 13,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(41),
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Text(
-                      '睡眠故事',
-                      style: AppFonts.sans(
-                        fontSize: 12,
-                        letterSpacing: 2,
-                        color: Colors.white.withAlpha(204),
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 13,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(41),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Text(
+                        '睡眠故事',
+                        style: AppFonts.sans(
+                          fontSize: 12,
+                          letterSpacing: 2,
+                          color: Colors.white.withAlpha(204),
+                        ),
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    story.title,
-                    style: AppFonts.serif(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                    const Spacer(),
+                    Text(
+                      story.title,
+                      style: AppFonts.serif(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    story.metadata,
-                    style: AppFonts.sans(
-                      fontSize: 13,
-                      color: Colors.white.withAlpha(191),
+                    const SizedBox(height: 6),
+                    Text(
+                      story.metadata,
+                      style: AppFonts.sans(
+                        fontSize: 13,
+                        color: Colors.white.withAlpha(191),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              right: 24,
-              bottom: 24,
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withAlpha(235),
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.play_arrow,
-                    color: Color(0xFF3C2D24),
-                    size: 24,
-                  ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              Positioned(
+                right: 24,
+                bottom: 24,
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withAlpha(235),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.play_arrow,
+                      color: Color(0xFF3C2D24),
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
 
   Widget _buildAmbientSection(
+    BuildContext context,
     List<AmbientSound> sounds, {
     required double horizontalPadding,
     required bool isWide,
@@ -304,14 +309,16 @@ class SleepScreen extends StatelessWidget {
                 children: sounds.map((sound) {
                   return SizedBox(
                     width: 112,
-                    child: _buildAmbientSoundItem(sound),
+                    child: _buildAmbientSoundItem(context, sound),
                   );
                 }).toList(),
               )
             else
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: sounds.map(_buildAmbientSoundItem).toList(),
+                children: sounds
+                    .map((sound) => _buildAmbientSoundItem(context, sound))
+                    .toList(),
               ),
           ],
         ),
@@ -319,39 +326,51 @@ class SleepScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAmbientSoundItem(AmbientSound sound) {
-    return Column(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: AppColors.sleepGradientFor(sound.themeKey),
-            ),
-            border: sound.isFeatured
-                ? Border.all(color: AppColors.primary, width: 1.5)
-                : null,
-          ),
-        ),
-        const SizedBox(height: 9),
-        Text(
+  Widget _buildAmbientSoundItem(BuildContext context, AmbientSound sound) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        context.read<PlayerProvider>().play(
           sound.title,
-          style: AppFonts.sans(
-            fontSize: 13,
-            color: sound.isFeatured
-                ? AppColors.textPrimary
-                : AppColors.textSecondary,
+          '自然音景',
+          30,
+          audioUrl: sound.audioUrl,
+        );
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: AppColors.sleepGradientFor(sound.themeKey),
+              ),
+              border: sound.isFeatured
+                  ? Border.all(color: AppColors.primary, width: 1.5)
+                  : null,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 9),
+          Text(
+            sound.title,
+            style: AppFonts.sans(
+              fontSize: 13,
+              color: sound.isFeatured
+                  ? AppColors.textPrimary
+                  : AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildSleepListSection(
+    BuildContext context,
     List<SleepItem> items, {
     required double horizontalPadding,
     required bool isWide,
@@ -369,7 +388,7 @@ class SleepScreen extends StatelessWidget {
             ),
           ),
         if (isWide) const SizedBox(height: 12),
-        ...items.map(_buildSleepListItem),
+        ...items.map((item) => _buildSleepListItem(context, item)),
       ],
     );
 
@@ -389,56 +408,67 @@ class SleepScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSleepListItem(SleepItem item) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: const Color(0x12383127), width: 1),
+  Widget _buildSleepListItem(BuildContext context, SleepItem item) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        context.read<PlayerProvider>().play(
+          item.title,
+          item.type,
+          item.durationMinutes,
+          audioUrl: item.audioUrl,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: const Color(0x12383127), width: 1),
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: AppColors.sleepGradientFor(item.themeKey),
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: AppColors.sleepGradientFor(item.themeKey),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  style: AppFonts.serif(fontSize: 17, color: AppColors.textPrimary),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  item.metadata,
-                  style: AppFonts.sans(
-                    fontSize: 12,
-                    color: AppColors.textTertiary,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: AppFonts.serif(
+                      fontSize: 17,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 3),
+                  Text(
+                    item.metadata,
+                    style: AppFonts.sans(
+                      fontSize: 12,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Text(
-            '播放',
-            style: AppFonts.sans(
-              fontSize: 12,
-              color: AppColors.primary,
+            Text(
+              '播放',
+              style: AppFonts.sans(fontSize: 12, color: AppColors.primary),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

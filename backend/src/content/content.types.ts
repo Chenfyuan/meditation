@@ -6,6 +6,7 @@ export type MeditationListItem = {
   durationMinutes: number;
   category: string;
   themeKey: string;
+  audioUrl: string | null;
 };
 
 export type FeaturedSessionResponse = {
@@ -15,6 +16,7 @@ export type FeaturedSessionResponse = {
   instructor: string;
   durationMinutes: number;
   themeKey: string;
+  audioUrl: string | null;
 };
 
 export type ContinueSessionResponse = {
@@ -24,6 +26,7 @@ export type ContinueSessionResponse = {
   durationMinutes: number;
   remainingSeconds: number;
   themeKey: string;
+  audioUrl: string | null;
 };
 
 export type TopicSummaryItem = {
@@ -47,6 +50,7 @@ export type SleepStoryResponse = {
   descriptor: string;
   durationMinutes: number;
   themeKey: string;
+  audioUrl: string | null;
 };
 
 export type AmbientSoundItem = {
@@ -54,6 +58,7 @@ export type AmbientSoundItem = {
   title: string;
   themeKey: string;
   isFeatured: boolean;
+  audioUrl: string | null;
 };
 
 export type SleepItemResponse = {
@@ -62,6 +67,7 @@ export type SleepItemResponse = {
   type: string;
   durationMinutes: number;
   themeKey: string;
+  audioUrl: string | null;
 };
 
 export type SleepResponse = {

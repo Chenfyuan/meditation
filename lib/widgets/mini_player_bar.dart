@@ -13,6 +13,13 @@ class MiniPlayerBar extends StatelessWidget {
     final player = context.watch<PlayerProvider>();
     final posMin = player.position.inMinutes.toString().padLeft(2, '0');
     final posSec = (player.position.inSeconds % 60).toString().padLeft(2, '0');
+    final instructorLabel = player.currentInstructor.trim().isEmpty
+        ? '静'
+        : player.currentInstructor;
+    final detailLabel =
+        player.isLoading || player.isCompleted || player.playbackMessage != null
+        ? player.statusLabel
+        : '$instructorLabel · $posMin:$posSec';
 
     return Material(
       color: Colors.transparent,
@@ -63,7 +70,7 @@ class MiniPlayerBar extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${player.currentInstructor} · $posMin:$posSec',
+                      detailLabel,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppFonts.sans(
@@ -76,7 +83,7 @@ class MiniPlayerBar extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               GestureDetector(
-                onTap: player.togglePlay,
+                onTap: player.canControl ? () => player.togglePlay() : null,
                 behavior: HitTestBehavior.opaque,
                 child: Container(
                   width: 40,
@@ -85,11 +92,19 @@ class MiniPlayerBar extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: Colors.white.withAlpha(24),
                   ),
-                  child: Icon(
-                    player.isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
-                    size: 22,
-                  ),
+                  child: player.isLoading
+                      ? const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Icon(
+                          player.isPlaying ? Icons.pause : Icons.play_arrow,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                 ),
               ),
               const SizedBox(width: 10),

@@ -130,9 +130,7 @@ export class ContentService {
   }
 }
 
-function mapMeditation(
-  meditation: Meditation,
-): MeditationListItem {
+function mapMeditation(meditation: Meditation): MeditationListItem {
   return {
     id: meditation.id,
     title: meditation.title,
@@ -141,12 +139,11 @@ function mapMeditation(
     durationMinutes: meditation.durationMinutes,
     category: meditation.category,
     themeKey: meditation.themeKey,
+    audioUrl: meditation.audioUrl,
   };
 }
 
-function mapFeaturedSession(
-  meditation: Meditation,
-): FeaturedSessionResponse {
+function mapFeaturedSession(meditation: Meditation): FeaturedSessionResponse {
   return {
     id: meditation.id,
     title: meditation.title,
@@ -154,12 +151,11 @@ function mapFeaturedSession(
     instructor: meditation.instructor,
     durationMinutes: meditation.durationMinutes,
     themeKey: meditation.themeKey,
+    audioUrl: meditation.audioUrl,
   };
 }
 
-function mapContinueSession(
-  meditation: Meditation,
-): ContinueSessionResponse {
+function mapContinueSession(meditation: Meditation): ContinueSessionResponse {
   return {
     id: meditation.id,
     title: meditation.title,
@@ -167,12 +163,11 @@ function mapContinueSession(
     durationMinutes: meditation.durationMinutes,
     remainingSeconds: CONTINUE_SESSION_REMAINING_SECONDS,
     themeKey: meditation.themeKey,
+    audioUrl: meditation.audioUrl,
   };
 }
 
-function mapTopicSummary(
-  topicSummary: TopicSummary,
-): TopicSummaryItem {
+function mapTopicSummary(topicSummary: TopicSummary): TopicSummaryItem {
   return {
     name: topicSummary.name,
     sessionCount: topicSummary.sessionCount,
@@ -180,38 +175,35 @@ function mapTopicSummary(
   };
 }
 
-function mapSleepStory(
-  sleepItem: SleepItem,
-): SleepStoryResponse {
+function mapSleepStory(sleepItem: SleepItem): SleepStoryResponse {
   return {
     id: sleepItem.id,
     title: sleepItem.title,
     descriptor: sleepItem.descriptor,
     durationMinutes: sleepItem.durationMinutes,
     themeKey: sleepItem.themeKey,
+    audioUrl: sleepItem.audioUrl,
   };
 }
 
-function mapAmbientSound(
-  ambientSound: AmbientSound,
-): AmbientSoundItem {
+function mapAmbientSound(ambientSound: AmbientSound): AmbientSoundItem {
   return {
     id: ambientSound.id,
     title: ambientSound.title,
     themeKey: ambientSound.themeKey,
     isFeatured: ambientSound.isFeatured,
+    audioUrl: ambientSound.audioUrl,
   };
 }
 
-function mapSleepItem(
-  sleepItem: SleepItem,
-): SleepItemResponse {
+function mapSleepItem(sleepItem: SleepItem): SleepItemResponse {
   return {
     id: sleepItem.id,
     title: sleepItem.title,
     type: sleepItem.type === SleepItemType.STORY ? '睡前故事' : '声景',
     durationMinutes: sleepItem.durationMinutes,
     themeKey: sleepItem.themeKey,
+    audioUrl: sleepItem.audioUrl,
   };
 }
 
