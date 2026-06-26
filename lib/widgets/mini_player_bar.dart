@@ -16,8 +16,11 @@ class MiniPlayerBar extends StatelessWidget {
     final instructorLabel = player.currentInstructor.trim().isEmpty
         ? '静'
         : player.currentInstructor;
-    final detailLabel =
-        player.isLoading || player.isCompleted || player.playbackMessage != null
+    final detailLabel = player.hasSleepTimer
+        ? '定时关闭 · ${player.sleepTimerRemainingLabel}'
+        : player.isLoading ||
+              player.isCompleted ||
+              player.playbackMessage != null
         ? player.statusLabel
         : '$instructorLabel · $posMin:$posSec';
 

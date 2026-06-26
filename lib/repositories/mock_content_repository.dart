@@ -21,7 +21,8 @@ class MockContentRepository implements ContentRepository {
         instructor: 'Sarah',
         durationMinutes: 10,
         themeKey: 'bronze',
-        audioUrl: 'https://cdn.pixabay.com/audio/2022/06/07/audio_b9bd4170e4.mp3',
+        audioUrl:
+            'https://cdn.pixabay.com/audio/2022/06/07/audio_b9bd4170e4.mp3',
       ),
       continueSession: const ContinueSession(
         id: 'home-continue-1',
@@ -30,7 +31,8 @@ class MockContentRepository implements ContentRepository {
         durationMinutes: 12,
         remainingSeconds: 200,
         themeKey: 'sage',
-        audioUrl: 'https://cdn.pixabay.com/audio/2022/10/30/audio_6fc5a1d16c.mp3',
+        audioUrl:
+            'https://cdn.pixabay.com/audio/2022/10/30/audio_6fc5a1d16c.mp3',
       ),
       topicSummaries: const [
         TopicSummary(name: '放松', sessionCount: 12, themeKey: 'rose'),
@@ -57,7 +59,8 @@ class MockContentRepository implements ContentRepository {
         durationMinutes: 8,
         category: '放松',
         themeKey: 'sand',
-        audioUrl: 'https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3',
+        audioUrl:
+            'https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3',
       ),
       Meditation(
         id: 'meditation-2',
@@ -67,7 +70,8 @@ class MockContentRepository implements ContentRepository {
         durationMinutes: 15,
         category: '放松',
         themeKey: 'rose',
-        audioUrl: 'https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3',
+        audioUrl:
+            'https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3',
       ),
       Meditation(
         id: 'meditation-3',
@@ -77,7 +81,8 @@ class MockContentRepository implements ContentRepository {
         durationMinutes: 12,
         category: '专注',
         themeKey: 'sage',
-        audioUrl: 'https://cdn.pixabay.com/audio/2022/03/24/audio_40d1a11ddd.mp3',
+        audioUrl:
+            'https://cdn.pixabay.com/audio/2022/03/24/audio_40d1a11ddd.mp3',
       ),
       Meditation(
         id: 'meditation-4',
@@ -87,7 +92,8 @@ class MockContentRepository implements ContentRepository {
         durationMinutes: 10,
         category: '减压',
         themeKey: 'bronze',
-        audioUrl: 'https://cdn.pixabay.com/audio/2023/09/04/audio_4956b4edd1.mp3',
+        audioUrl:
+            'https://cdn.pixabay.com/audio/2023/09/04/audio_4956b4edd1.mp3',
       ),
       Meditation(
         id: 'meditation-5',
@@ -97,7 +103,8 @@ class MockContentRepository implements ContentRepository {
         durationMinutes: 20,
         category: '睡眠',
         themeKey: 'twilight',
-        audioUrl: 'https://cdn.pixabay.com/audio/2022/05/16/audio_5bb3b35e89.mp3',
+        audioUrl:
+            'https://cdn.pixabay.com/audio/2022/05/16/audio_5bb3b35e89.mp3',
       ),
     ];
 
@@ -139,7 +146,8 @@ class MockContentRepository implements ContentRepository {
         descriptor: '轻柔雨声',
         durationMinutes: 45,
         themeKey: 'cocoa',
-        audioUrl: 'https://cdn.pixabay.com/audio/2022/10/30/audio_6fc5a1d16c.mp3',
+        audioUrl:
+            'https://cdn.pixabay.com/audio/2022/10/30/audio_6fc5a1d16c.mp3',
       ),
       ambientSounds: [
         AmbientSound(
@@ -147,11 +155,30 @@ class MockContentRepository implements ContentRepository {
           title: '雨声',
           themeKey: 'moss',
           isFeatured: true,
-          audioUrl: 'https://cdn.pixabay.com/audio/2022/10/30/audio_6fc5a1d16c.mp3',
+          audioUrl:
+              'https://cdn.pixabay.com/audio/2022/10/30/audio_6fc5a1d16c.mp3',
         ),
-        AmbientSound(id: 'ambient-2', title: '海浪', themeKey: 'ocean', audioUrl: 'https://cdn.pixabay.com/audio/2022/06/07/audio_b9bd4170e4.mp3'),
-        AmbientSound(id: 'ambient-3', title: '篝火', themeKey: 'fire', audioUrl: 'https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3'),
-        AmbientSound(id: 'ambient-4', title: '白噪', themeKey: 'stone', audioUrl: 'https://cdn.pixabay.com/audio/2022/03/24/audio_40d1a11ddd.mp3'),
+        AmbientSound(
+          id: 'ambient-2',
+          title: '海浪',
+          themeKey: 'ocean',
+          audioUrl:
+              'https://cdn.pixabay.com/audio/2022/06/07/audio_b9bd4170e4.mp3',
+        ),
+        AmbientSound(
+          id: 'ambient-3',
+          title: '篝火',
+          themeKey: 'fire',
+          audioUrl:
+              'https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3',
+        ),
+        AmbientSound(
+          id: 'ambient-4',
+          title: '白噪',
+          themeKey: 'stone',
+          audioUrl:
+              'https://cdn.pixabay.com/audio/2022/03/24/audio_40d1a11ddd.mp3',
+        ),
       ],
       sleepItems: [
         SleepItem(
@@ -160,7 +187,8 @@ class MockContentRepository implements ContentRepository {
           type: '声景',
           durationMinutes: 30,
           themeKey: 'ocean',
-          audioUrl: 'https://cdn.pixabay.com/audio/2022/06/07/audio_b9bd4170e4.mp3',
+          audioUrl:
+              'https://cdn.pixabay.com/audio/2022/06/07/audio_b9bd4170e4.mp3',
         ),
         SleepItem(
           id: 'sleep-item-2',
@@ -168,7 +196,8 @@ class MockContentRepository implements ContentRepository {
           type: '睡前故事',
           durationMinutes: 18,
           themeKey: 'violet',
-          audioUrl: 'https://cdn.pixabay.com/audio/2022/05/16/audio_5bb3b35e89.mp3',
+          audioUrl:
+              'https://cdn.pixabay.com/audio/2022/05/16/audio_5bb3b35e89.mp3',
         ),
       ],
     );

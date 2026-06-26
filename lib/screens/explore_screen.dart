@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/practice_session_record.dart';
 import '../providers/explore_provider.dart';
 import '../providers/player_provider.dart';
 import '../theme/app_colors.dart';
@@ -137,6 +138,7 @@ class ExploreScreen extends StatelessWidget {
                                 meditation.instructor,
                                 meditation.durationMinutes,
                                 audioUrl: meditation.audioUrl,
+                                source: PracticeSource.meditation,
                               );
                             },
                           );
@@ -152,6 +154,7 @@ class ExploreScreen extends StatelessWidget {
                                 meditation.instructor,
                                 meditation.durationMinutes,
                                 audioUrl: meditation.audioUrl,
+                                source: PracticeSource.meditation,
                               );
                             },
                           );

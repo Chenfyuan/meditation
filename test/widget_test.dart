@@ -11,18 +11,27 @@ import 'package:meditation/providers/profile_provider.dart';
 import 'package:meditation/providers/sleep_provider.dart';
 import 'package:meditation/repositories/content_repository.dart';
 import 'package:meditation/repositories/mock_content_repository.dart';
+import 'package:meditation/repositories/practice_history_repository.dart';
 import 'package:meditation/theme/app_theme.dart';
 
 void main() {
   testWidgets('App renders home screen', (WidgetTester tester) async {
     final contentRepository = MockContentRepository();
+    final historyRepository = InMemoryPracticeHistoryRepository();
 
     await tester.pumpWidget(
       MultiProvider(
         providers: [
           Provider<ContentRepository>.value(value: contentRepository),
+          ChangeNotifierProvider<PracticeHistoryRepository>.value(
+            value: historyRepository,
+          ),
           ChangeNotifierProvider(create: (_) => NavigationProvider()),
-          ChangeNotifierProvider(create: (_) => PlayerProvider()),
+          ChangeNotifierProvider(
+            create: (context) => PlayerProvider(
+              historyRepository: context.read<PracticeHistoryRepository>(),
+            ),
+          ),
           ChangeNotifierProvider(create: (_) => BreathingProvider()),
           ChangeNotifierProvider(
             create: (context) =>
@@ -40,9 +49,10 @@ void main() {
                   ..load(),
           ),
           ChangeNotifierProvider(
-            create: (context) =>
-                ProfileProvider(repository: context.read<ContentRepository>())
-                  ..load(),
+            create: (context) => ProfileProvider(
+              repository: context.read<ContentRepository>(),
+              historyRepository: context.read<PracticeHistoryRepository>(),
+            )..load(),
           ),
         ],
         child: MaterialApp(

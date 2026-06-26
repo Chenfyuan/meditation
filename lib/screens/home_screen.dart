@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/home_data.dart';
+import '../models/practice_session_record.dart';
 import '../providers/home_provider.dart';
 import '../providers/navigation_provider.dart';
 import '../providers/player_provider.dart';
@@ -173,6 +174,7 @@ class HomeScreen extends StatelessWidget {
             session.instructor,
             session.durationMinutes,
             audioUrl: session.audioUrl,
+            source: PracticeSource.meditation,
           );
         },
         child: Container(
@@ -310,6 +312,7 @@ class HomeScreen extends StatelessWidget {
             session.instructor,
             session.durationMinutes,
             audioUrl: session.audioUrl,
+            source: PracticeSource.meditation,
           );
         },
         child: Container(

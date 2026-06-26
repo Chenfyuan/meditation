@@ -10,6 +10,7 @@ import 'providers/profile_provider.dart';
 import 'providers/sleep_provider.dart';
 import 'repositories/content_repository.dart';
 import 'repositories/mock_content_repository.dart';
+import 'repositories/practice_history_repository.dart';
 import 'repositories/remote_content_repository.dart';
 import 'theme/app_theme.dart';
 
@@ -20,8 +21,15 @@ void main() {
     MultiProvider(
       providers: [
         Provider<ContentRepository>.value(value: contentRepository),
+        ChangeNotifierProvider<PracticeHistoryRepository>(
+          create: (_) => SharedPreferencesPracticeHistoryRepository(),
+        ),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
-        ChangeNotifierProvider(create: (_) => PlayerProvider()),
+        ChangeNotifierProvider(
+          create: (context) => PlayerProvider(
+            historyRepository: context.read<PracticeHistoryRepository>(),
+          ),
+        ),
         ChangeNotifierProvider(create: (_) => BreathingProvider()),
         ChangeNotifierProvider(
           create: (context) =>
@@ -39,9 +47,10 @@ void main() {
                 ..load(),
         ),
         ChangeNotifierProvider(
-          create: (context) =>
-              ProfileProvider(repository: context.read<ContentRepository>())
-                ..load(),
+          create: (context) => ProfileProvider(
+            repository: context.read<ContentRepository>(),
+            historyRepository: context.read<PracticeHistoryRepository>(),
+          )..load(),
         ),
       ],
       child: MaterialApp(

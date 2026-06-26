@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/practice_session_record.dart';
 import '../models/sleep_content.dart';
 import '../providers/player_provider.dart';
 import '../providers/sleep_provider.dart';
@@ -171,6 +172,7 @@ class SleepScreen extends StatelessWidget {
             '睡眠故事',
             story.durationMinutes,
             audioUrl: story.audioUrl,
+            source: PracticeSource.sleepStory,
           );
         },
         child: Container(
@@ -335,6 +337,7 @@ class SleepScreen extends StatelessWidget {
           '自然音景',
           30,
           audioUrl: sound.audioUrl,
+          source: PracticeSource.soundscape,
         );
       },
       child: Column(
@@ -417,6 +420,9 @@ class SleepScreen extends StatelessWidget {
           item.type,
           item.durationMinutes,
           audioUrl: item.audioUrl,
+          source: item.type == '睡前故事'
+              ? PracticeSource.sleepStory
+              : PracticeSource.soundscape,
         );
       },
       child: Container(

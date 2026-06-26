@@ -99,6 +99,8 @@ class PlayerScreen extends StatelessWidget {
                 _buildControls(player),
                 const SizedBox(height: 36),
                 _buildAmbientBadge(player),
+                const SizedBox(height: 14),
+                _buildSleepTimerControl(player),
               ],
             ),
           ),
@@ -170,6 +172,8 @@ class PlayerScreen extends StatelessWidget {
                         const SizedBox(height: 34),
                         _buildControls(player),
                         const Spacer(),
+                        _buildSleepTimerControl(player),
+                        const SizedBox(height: 14),
                         _buildAmbientBadge(player),
                       ],
                     ),
@@ -386,6 +390,55 @@ class PlayerScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSleepTimerControl(PlayerProvider player) {
+    return PopupMenuButton<int?>(
+      tooltip: '定时关闭',
+      onSelected: player.setSleepTimerMinutes,
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<int?>(
+            value: null,
+            child: Text('关闭', style: AppFonts.sans(fontSize: 14)),
+          ),
+          ...PlayerProvider.sleepTimerOptions.map((minutes) {
+            return PopupMenuItem<int?>(
+              value: minutes,
+              child: Text('$minutes 分钟', style: AppFonts.sans(fontSize: 14)),
+            );
+          }),
+        ];
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppColors.white.withAlpha(24),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: AppColors.white.withAlpha(24)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.timer_outlined,
+              color: AppColors.white.withAlpha(217),
+              size: 17,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              player.hasSleepTimer
+                  ? '定时关闭 · ${player.sleepTimerRemainingLabel}'
+                  : '定时关闭',
+              style: AppFonts.sans(
+                fontSize: 13,
+                color: AppColors.white.withAlpha(217),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
